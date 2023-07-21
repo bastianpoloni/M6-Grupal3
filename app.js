@@ -7,17 +7,27 @@ import _ from 'lodash';
 import chalk from 'chalk';
 
 
+
 const app = express();
 const path = "./files/citas.json";
 let citas = JSON.parse(fs.readFileSync(path));
 let id = uuidv4();
-const log = console.log;
+const {log} = console;
 app.use(express.json());
 
+
+
+
 app.get('/', (req, res) => {
-    citas = JSON.parse(fs.readFileSync(path));
-    res.send(citas);
-    log(chalk.blue.bgWhite(citas));
+    citas = JSON.parse(fs.readFileSync(path));   
+    const arrayLodash = [];
+
+    _.forEach(citas, (cita) => {
+            log(chalk.blue.bgWhite(`Nombre: ${cita.nombre} Apellido: ${cita.apellido} ID: ${cita.id} TimeStamp: ${cita.timeStamp}`));
+            arrayLodash.push(`Nombre: ${cita.nombre} Apellido: ${cita.apellido} ID: ${cita.id} TimeStamp: ${cita.timeStamp}`);
+        });
+    res.send(arrayLodash);
+    
     
 })
 
@@ -48,7 +58,7 @@ async function addUser(){
             nombre: user.results[0].name.first,
             apellido: user.results[0].name.last,
             id : id,
-            timeStamp: moment().format('MMMM DD-YYYY HH:mm:ss'),
+            timeStamp: moment().format('MMMM DD YYYY HH:mm:ss'),
         });
         fs.writeFileSync(path, JSON.stringify(citas));
        
